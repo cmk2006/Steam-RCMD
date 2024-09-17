@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    {% block head %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <title>Steam Game Recommendation</title>
+    {% endblock %}
+  </head>
+  <body>
+
+  	<div class="container">
+      <div id="content-wrap">
+        <div class="container">
+          <header class="d-flex flex-wrap justify-content-center py-3 mb-4 border-bottom">
+            <a href="/input" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-dark text-decoration-none">
+              <svg class="bi me-2" width="40" height="32"><use xlink:href="#bootstrap"></use></svg>
+              <span class="fs-4">Steam game recommendation</span>
+            </a>
+            {% block user_id %}
+            {% endblock %}
+          </header>
+        </div>
+        {% block content %}
+          <link rel="stylesheet" href="./templates/bootstrap.css"/>
+        {% endblock %}
+      </div>
+	  </div>
+    <footer id="footer">
+        <div class="text-center p-3" style="background-color: #F5FAFF;">
+          © 2024:
+          <a style="color: #0c243c;" href="/input">Steam Recommendation Engine</a>
+      </div>
+    </footer>
+  </body>
+</html>

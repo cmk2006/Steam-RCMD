@@ -1,0 +1,117 @@
+{% extends 'base.html' %}
+
+{% block head %}
+  {{ super() }}
+  <style type="text/css">
+    .important { color: #336699; }
+  </style>
+{% endblock %}
+
+{% block user_id %}
+{% if name %}
+  <a class="d-flex align-items-center mb-3 mb-md-auto me-md-0 text-dark text-decoration-none" href="/input">
+    <span class="fs-5">User id: {{ name }}</span>
+    <svg class="bi me-2" height="32" width="40"><use xlink:href="#bootstrap"></use></svg>
+  </a>
+  
+{% endif %}
+{% endblock %}
+{% block content %}
+{% if name %}
+    <h4>Game time Analysis</h4>
+    <div class="stats">
+      <script src="https://www.gstatic.com/charts/loader.js" type="text/javascript"></script>
+      <div class="thechart">
+          <canvas id="myChart"></canvas>
+      </div>
+      <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+      <script>
+          const ctx = document.getElementById('myChart');
+          var xValues = [];
+          var yValues = [];
+          var barColors = ["#729EA1", "#94AE95","#B5BD89","#CABE91","brown","#DFBE99","#EC9192","#E47284"];
+          {% for key, value in data_id.items() %}
+            if ({{ value }}>0){
+              xValues.push("{{key}}");
+              yValues.push({{value}});
+            }
+          {% endfor %}
+          new Chart("myChart", {
+            type: "doughnut",
+            data: {
+              labels: xValues,
+              datasets: [{
+                backgroundColor: barColors,
+                data: yValues
+              }]
+            },
+            options: {
+              formatter: (val, context) =>
+              `${
+                  round((Number(val) * 100) / context.chart.data.datasets[context.datasetIndex].data.reduce((a, b) => Number(a) + Number(b),0),2)
+                }%`,
+              borderColor: '#f5faff',
+              borderWidth: 5,
+              borderRadius: 2,
+              hoverBorderWidth: 2,
+              plugins: {
+                legend: {
+                  display: true,
+                  fontSize:25,
+                },
+                tooltip: {
+                  callbacks: {
+                    label: (ttItem) =>
+                    `${ttItem.label}: ${(ttItem.parsed * 100) / ttItem.dataset.data.reduce((a, b) => Number(a) + Number(b),0)}%`
+                  }
+                }
+              },
+            },
+          });
+      </script>
+    </div>
+
+
+    </br>
+    <div data-user-template-container id="boxcontainer">
+      <h4>Suggestions</h4>
+      <div class="row row-cols-1 row-cols-md-3 g-4">
+            {% for game_pred in data_predict %}
+                <!--<div class="gamebox">
+                    <img src={{app_id[game_pred]}} alt="game banner">
+                    <H1 class="name" data-name> {{game_pred}}</H1>
+                    <H1 class="genre" data-genre> {{data_predict[game_pred]}}</H1>
+
+                </div>-->
+                <div class="col">
+                  <div class="card">
+                    <img alt="game banner" class="card-img-top" src={{app_id[game_pred]}}>
+                    <div class="card-body">
+                      <h6 class="card-title">{{game_pred}}</h6>
+                      <p class="card-text">{{data_predict[game_pred]}}</p>
+                      <a class="btn btn-primary" href={{app_link[game_pred]}} target="_blank">View on Steam</a>
+                    </div>
+                  </div>
+                </div>
+            {% endfor %}
+      </div>
+    </div>
+
+    
+
+
+{% else %}
+    <h1>Mời Nhập User ID</h1>
+    </br>
+    <form method="POST">
+        {{ form.hidden_tag() }}
+        <div class="form-group">
+        {{ form.name.label(class="form-label") }}
+        {{ form.name(class="form-control") }}
+        </div>
+        </br>
+        {{ form.submit(class_="form-control", style="background-color: #55c2c3;") }}
+    </form>
+{% endif %}
+
+{% endblock %}
